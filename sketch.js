@@ -1,5 +1,6 @@
 //assets
 var coin, warehouse, escape;
+var k;
 var dog;
 var life;
 var myFont;
@@ -23,11 +24,14 @@ function setup() {
     dog.addAnimation("dead", "assets/dd_0.png");
     coin = createSprite(random(900, 400), random(400, 300));
     coin.addAnimation("normal", "assets/coin_small/coin_sm_0.png", "assets/coin_small/coin_sm_8.png");
+    k = createSprite(300, 750);
+    k.addAnimation("key", "assets/key/key_0.png", "assets/key/key_7.png");
 }
 
 function draw() {
-    image(warehouse, 0, 0, 1000, 750);
+    image(warehouse, 0, 0, 1050, 750);
     dog.overlap(coin, choice);
+    dog.overlap(k, pickup);
     drawSprites();
     
     //life
@@ -41,22 +45,24 @@ function draw() {
     textSize(15);
     text("instructions:", 600, 25);
     textSize(12); 
-    text("Pick up the coin.", 750, 25);
+    text("Pick up the coin.", 740, 25);
+    text("use arrow keys to move", 740, 50);
+    text("press up or down repeatedly to scale", 740, 75);
     
     //deplete life
-    if (frameCount === 1100) {
+    if (frameCount === 500) {
         life -= 20;
     }
-    if (frameCount === 2200) {
+    if (frameCount === 1000) {
         life -= 20;
     }
-    if (frameCount === 3300) {
+    if (frameCount === 1500) {
         life -= 20;
     }
-    if (frameCount === 4400) {
+    if (frameCount === 2000) {
         life -= 20;
     }
-    if (frameCount === 6600) {
+    if (frameCount === 2500) {
         life -= 20;
     }
     if (life <= 0) {
@@ -67,6 +73,14 @@ function draw() {
         text("Game Over", 450, height / 2);
         coin.remove();
         drawSprites(dog.changeAnimation("dead"));
+    }
+    if (dog.scale >= 1.5){
+        background(255);
+        fill(0);
+        textSize(80);
+        textFont(myFont);
+        text("You've Won", 450, height / 2);
+        coin.remove();
     }
 }
 
@@ -79,7 +93,7 @@ function keyPressed() {
     else if (keyCode == DOWN_ARROW) {
         dog.changeAnimation("moving");
         dog.setSpeed(1.5, 90);
-        dog.scale += 0.05;
+        dog.scale += 0.08;
     }
     else if (keyCode == LEFT_ARROW) {
         dog.changeAnimation("moving");
@@ -89,7 +103,7 @@ function keyPressed() {
     else if (keyCode == UP_ARROW) {
         dog.changeAnimation("moving");
         dog.setSpeed(1.5, 270);
-        dog.scale -= 0.05;
+        dog.scale -= 0.08;
     }
     else if (key == ' ') {
         dog.changeAnimation("standing");
@@ -97,6 +111,24 @@ function keyPressed() {
     }
     return false;
 }
+
+function pickup(dog, k) {
+    dog.changeAnimation("standing");
+    dog.setSpeed(0,0);
+    noStroke();
+    fill(255);
+    rect(400, 650, 260, 90);
+    textFont(myFont);
+    fill(0);
+    textSize(15);
+    text("Press X to pick up the key", 420, 670);
+    
+    if(keyWentDown("x")) {
+        k.remove();
+        text("Escape", 450, 700);
+    }
+}
+
 
 function choice(dog, coin) {
     dog.changeAnimation("standing");
